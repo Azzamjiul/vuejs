@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Belajar Component Vue JS</title>
+    <script src="lib/vue.js"></script>
+    <style type="text/css">
+        .card {
+            background: #efefef; border:1px solid #ddd; margin-right:5px; padding:5px;
+            width: 200px; float:left;
+        }
+
+        h3{
+            min-height: 45px;
+        }
+
+        .fade-enter-active, .fade-leave-active {
+            transition: opacity .5s;
+        }
+
+        .fade-enter, .fade-leave-to {
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- <h1>Selected: {{ selectedBook }}</h1>
+        <book
+            v-for   =   "book in books"
+            :key    =   "book.id"
+            :book   =   "book"
+            @pilih   =   "selectedBook = $event"
+        >
+        </book> -->
+        <!-- <information>
+            <p>Waspada, banyak curanmor!</p>
+        </information>
+        <alert>
+            <template v-slot:default='slotData'>
+                <h1>{{ slotData.defaultAlert }}</h1>
+            </template>
+        </alert> -->
+        <button @click="currentComponent = 'list' " >List</button>
+        <button @click="currentComponent = 'detail' " >Detail</button>
+        <hr>
+        <transition name="fade" mode="out-in">
+            <component :is='currentComponent'></component>
+        </transition>
+    </div>
+
+    <script type="module">
+        Vue.component('information', {
+            props: ['value'],
+            template: `
+                <div class="card">
+                    <strong>Informasi</strong>
+                    <hr>
+                    <slot></slot>
+                </div>
+            `
+        })
+
+        Vue.component('alert', {
+            data () {
+                return {
+                    defaultAlert: 'Awas Bahaya'
+                }
+            },
+            template: `
+                <div>
+                    <slot :defaultAlert="defaultAlert">{{defaultAlert}}</slot>
+                </div>
+            `
+        })
+
+        import { BookComponent } from './BookComponent.js'
+
+        var list = {
+            template: `
+                <div class="card">
+                    <strong>Bahasa Pemrograman</strong>
+                    <ul>
+                        <li>Javascript</li>
+                        <li>PHP</li>
+                        <li>Java</li>
+                    </ul>
+                </div>
+            `
+        }
+
+        var detail = {
+            template: `
+                <div class="card">
+                    <strong>PHP</strong>
+                    <p>
+                        PHP adalah singkatan dari PHP Hypertext Preprocessor.
+                    </p>
+                </div>
+            `
+        }
+
+        var vm = new Vue({
+            el: '#app',
+            components: {
+                'book': BookComponent,
+                'list': list,
+                'detail': detail
+            },
+            data: {
+                books: [
+                    {
+                        id: 99,
+                        title: 'C++ High Performance',
+                        description: 'Write code that scales across CPU registers, machine clusters',
+                        authors: 'Viktor Sehr, Björn Andrist',
+                        publish_year: 2018,
+                        price: 100000
+                    },
+                    {
+                        id: 100,
+                        title: 'Mastering Linux Security and Hardening', description: 'A comprehensive guide to mastering the art of Linux system from getting compromised',
+                        authors: 'Donald A. Tevault',
+                        publish_year: 2018,
+                        price: 125000
+                    },
+                    {
+                        id: 101,
+                        title: 'Mastering PostgreSQL 10',
+                        description: 'Master the capabilities of PostgreSQL 10 to efficiently manage and maintain your database',
+                        authors: 'Hans-Jürgen Schönig', publish_year: 2016,
+                        price: 90000
+                    }
+                ],
+                selectedBook: '',
+                currentComponent: 'list'
+            }
+        })
+    </script>
+</body>
+</html>
